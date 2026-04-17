@@ -1,0 +1,16 @@
+{
+    "name": "Smart Venue Assistant",
+    "short_name": "VenueAssist",
+    "description": "Offline-capable venue routing and assistant tool.",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#0B0E14",
+    "theme_color": "#3B82F6",
+    "icons": [
+        {
+            "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMzQjgyRjYiLz48Y2lyY2xlIGN4PSI5NiIgY3k9Ijk2IiByPSI1MCIgZmlsbD0id2hpdGUiLz48L3N2Zz4=",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        }
+    ]
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Venue Assistant | Hack2Skill Prompt Wars</title>
+    <meta name="description" content="AI-powered venue assistant for live events. Get real-time wait times, directions, and crowd alerts.">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Target for Dynamic Island -->
+    <div id="dynamic-island" class="dynamic-island hidden">
+        <div class="island-content">
+            <span class="pulse-dot"></span>
+            <span id="island-text">Alert message</span>
+        </div>
+    </div>
+
+    <!-- Login Overlay screen -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card card">
+            <h1 id="login-event-name">Loading Event...</h1>
+            <p>Please enter your registered Ticket ID to access the venue companion network.</p>
+            <div class="input-group" style="margin-top:20px;">
+                <input type="text" id="ticket-input" placeholder="e.g. VIP-442" autocomplete="off" aria-label="Ticket ID">
+            </div>
+            <button id="btn-login" class="btn-primary" style="margin-top:15px; width: 100%;" aria-label="Login and access venue">Connect & Authenticate</button>
+        </div>
+    </div>
+
+    <!-- Main Container for Views -->
+    <main id="app-container" class="hidden" style="opacity: 0;">
+        
+        <!-- App Header showing user profile and theme toggle -->
+        <header class="app-top-header">
+            <div class="user-greeting">
+                <div class="avatar"></div>
+                <div>
+                    <span id="lbl-username" style="display:block; font-weight:700; font-size:1rem;">VIP Ticket</span>
+                    <span id="lbl-eventname" style="font-size:0.75rem; color:var(--text-secondary);">Super Bowl</span>
+                </div>
+            </div>
+            <button id="theme-toggle" class="icon-button" aria-label="Toggle Theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </header>
+        
+        <!-- Demo Mode / Simulation Mode Badge -->
+        <div id="demo-badge" class="demo-badge hidden" title="Running in local simulation mode. Configure API keys in Admin for Cloud Sync.">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span>OFFLINE SIMULATION</span>
+        </div>
+
+        <!-- View 1: Smart Assistant (Default) -->
+        <section id="view-assistant" class="view active" style="top: 70px;">
+            <div class="card" id="venue-info-card" style="display:none; font-size:0.75rem; padding:12px; margin-bottom:10px; border-left: 4px solid var(--accent-blue);">
+                <strong style="color:var(--text-primary);">ℹ️ Event Info:</strong> <span id="vi-time"></span><br>
+                <strong style="color:var(--text-primary);">🛜 WiFi:</strong> <span id="vi-wifi"></span><br>
+                <strong style="color:var(--status-red);">🚨 Emergency:</strong> <span id="vi-contact"></span>
+            </div>
+
+            <div id="chat-window" class="chat-window scrollable">
+                <div class="chat-bubble bot">
+                    Hello! I'm your Smart Venue Assistant. I've synced with the latest event data. How can I help you today? Try asking "Where is the nearest food?", or "What's the wait time for restrooms?".
+                </div>
+                <!-- Typing Indicator (hidden by default) -->
+                <div id="typing-indicator" class="chat-bubble bot hidden">
+                    <div class="typing-dots"><span></span><span></span><span></span></div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type your question here..." autocomplete="off" />
+                <button id="chat-send">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+            <div class="quick-chips">
+                <button class="chip" data-query="food" aria-label="Find nearest food">🍔 Nearest Food</button>
+                <button class="chip" data-query="restroom" aria-label="Find nearest restroom">🚻 Restrooms</button>
+                <button class="chip" data-query="exit" aria-label="Find exit routes">🚪 Exit Routes</button>
+            </div>
+        </section>
+
+        <!-- View 2: Live Services Dashboard -->
+        <section id="view-dashboard" class="view" style="top: 70px;">
+            <header class="view-header">
+                <h1>Live Dashboard</h1>
+                <p>Real-time wait times configured by Event Admin</p>
+            </header>
+            
+            <div class="dashboard-grid scrollable" id="services-grid">
+                <!-- Dynamically populated from localStorage event config -->
+            </div>
+        </section>
+
+        <!-- View 3: Venue Isometric Overlay Map -->
+        <section id="view-map" class="view" style="top: 70px; padding: 0; background: var(--bg-main); overflow:auto;">
+            <div style="display:flex; justify-content:center; align-items:center; min-height:100%;">
+                <div style="position:relative; display:inline-block; max-width:100%;">
+                    <p id="no-map-fallback" style="text-align:center; padding:50px;">No map uploaded</p>
+                    <img id="attendee-map-img" style="max-width:100%; display:none; height:auto;">
+                    <div id="attendee-pins-layer" style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
+                    <!-- Dynamic SVG routing overlay -->
+                    <svg id="routing-svg" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;">
+                        <path id="routing-path" fill="none" stroke="var(--accent-blue)" stroke-width="4" stroke-dasharray="8 8" d="" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav hidden" id="bottom-nav">
+        <button class="nav-item active" data-target="view-assistant">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Assistant</span>
+        </button>
+        <button class="nav-item" data-target="view-dashboard">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            <span>Live Data</span>
+        </button>
+        <button class="nav-item" data-target="view-map">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+            <span>Heatmap</span>
+        </button>
+    </nav>
+
+    <!-- Firebase Compat SDKs (works without a build tool or server) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
