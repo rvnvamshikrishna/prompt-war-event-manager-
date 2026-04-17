@@ -6,6 +6,8 @@
     <title>Event Manager Admin Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Security: Content Security Policy to prevent XSS -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com;">
     <style>
         body { overflow: auto; height: auto; min-height: 100vh; }
         .admin-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; padding: 20px; }

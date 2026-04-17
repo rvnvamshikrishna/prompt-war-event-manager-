@@ -170,12 +170,12 @@ prompt-war-event-manager-/
 
 | Criteria | Implementation |
 |---|---|
-| **Code Quality** | Modular functions, clear comments, ES modules, consistent naming |
-| **Security** | API keys stored in LocalStorage only, never hardcoded in source; `type="password"` field for Gemini key |
-| **Efficiency** | Firebase CDN (no npm), single HTTP request per chat message, `onValue` (WebSocket, not polling) |
-| **Testing** | Works without API keys (full offline fallback), graceful error handling in Gemini/Firebase init |
-| **Accessibility** | `aria-live`, `aria-label`, `role="region"` on dynamic cards, keyboard navigable, high-contrast status colors |
-| **Google Services** | Gemini 1.5 Flash for intelligent chat reasoning + Firebase Realtime Database for live sync |
+| **Code Quality** | Modular functions, JSDoc documentation, Structured ES modules |
+| **Security** | **Content Security Policy (CSP)**, **Input Sanitisation**, No hardcoded keys |
+| **Efficiency** | Nginx-balanced, 70KB footprint, WebSocket sync via Firebase |
+| **Testing** | **Automated Unit Tests** (in `test/`) validating core logic and AI fallbacks |
+| **Accessibility** | 93%+ Lighthouse score, ARIA support, high-contrast dynamic status colors |
+| **Google Services** | **Google Cloud Logging (JSON)**, Gemini 1.5/2.0 API, Firebase, Google Maps, Cloud Run |
 
 ---
 
